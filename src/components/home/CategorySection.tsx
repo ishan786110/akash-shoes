@@ -1,6 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import categoryMen from "@/assets/category-men.jpg";
+import categoryWomen from "@/assets/category-women.jpg";
+import categoryAthletic from "@/assets/category-athletic.jpg";
+import categoryBoots from "@/assets/category-boots.jpg";
+import categoryKids from "@/assets/category-kids.jpg";
+import categoryFormal from "@/assets/category-formal.jpg";
 
 interface Category {
   id: string;
@@ -17,7 +23,7 @@ const CategorySection = () => {
       id: "men",
       name: "Men's Collection",
       description: "Professional and casual footwear for every occasion",
-      image: "/placeholder.svg",
+      image: categoryMen,
       productCount: 127,
       featured: true
     },
@@ -25,7 +31,7 @@ const CategorySection = () => {
       id: "women",
       name: "Women's Collection", 
       description: "Elegant styles from casual to sophisticated",
-      image: "/placeholder.svg",
+      image: categoryWomen,
       productCount: 156,
       featured: true
     },
@@ -33,7 +39,7 @@ const CategorySection = () => {
       id: "athletic",
       name: "Athletic & Sports",
       description: "Performance footwear for active lifestyles",
-      image: "/placeholder.svg",
+      image: categoryAthletic,
       productCount: 89,
       featured: false
     },
@@ -41,7 +47,7 @@ const CategorySection = () => {
       id: "boots",
       name: "Boots & Work Shoes",
       description: "Durable protection meets timeless style",
-      image: "/placeholder.svg",
+      image: categoryBoots,
       productCount: 76,
       featured: false
     },
@@ -49,7 +55,7 @@ const CategorySection = () => {
       id: "kids",
       name: "Kids & Youth",
       description: "Growing feet deserve the best comfort and quality",
-      image: "/placeholder.svg",
+      image: categoryKids,
       productCount: 94,
       featured: false
     },
@@ -57,7 +63,7 @@ const CategorySection = () => {
       id: "formal",
       name: "Formal & Business",
       description: "Make the right impression with professional footwear",
-      image: "/placeholder.svg",
+      image: categoryFormal,
       productCount: 68,
       featured: false
     }

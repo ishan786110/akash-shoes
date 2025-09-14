@@ -7,6 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Star, Heart, ShoppingCart, Filter, Grid, List } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import productOxfordShoes from "@/assets/product-oxford-shoes.jpg";
+import productRunningSneakers from "@/assets/product-running-sneakers.jpg";
+import productWomensHeels from "@/assets/product-womens-heels.jpg";
+import productWorkBoots from "@/assets/product-work-boots.jpg";
+import productCanvasSneakers from "@/assets/product-canvas-sneakers.jpg";
+import productKidsShoes from "@/assets/product-kids-shoes.jpg";
+import productHikingBoots from "@/assets/product-hiking-boots.jpg";
+import productBusinessLoafers from "@/assets/product-business-loafers.jpg";
 
 interface Product {
   id: number;
@@ -48,7 +56,7 @@ const ShopPage = () => {
       originalPrice: 159.99,
       rating: 4.8,
       reviews: 124,
-      image: "/placeholder.svg",
+      image: productOxfordShoes,
       category: "formal",
       isSale: true,
       sizes: ["8", "9", "10", "11", "12"],
@@ -61,7 +69,7 @@ const ShopPage = () => {
       price: 89.99,
       rating: 4.6,
       reviews: 89,
-      image: "/placeholder.svg",
+      image: productRunningSneakers,
       category: "athletic",
       isNew: true,
       sizes: ["7", "8", "9", "10", "11"],
@@ -74,7 +82,7 @@ const ShopPage = () => {
       price: 95.99,
       rating: 4.7,
       reviews: 156,
-      image: "/placeholder.svg",
+      image: productWomensHeels,
       category: "women",
       sizes: ["6", "7", "8", "9", "10"],
       colors: ["Black", "Red", "Nude"]
@@ -86,7 +94,7 @@ const ShopPage = () => {
       price: 149.99,
       rating: 4.9,
       reviews: 203,
-      image: "/placeholder.svg",
+      image: productWorkBoots,
       category: "boots",
       sizes: ["8", "9", "10", "11", "12", "13"],
       colors: ["Brown", "Black"]
@@ -99,7 +107,7 @@ const ShopPage = () => {
       originalPrice: 79.99,
       rating: 4.5,
       reviews: 78,
-      image: "/placeholder.svg",
+      image: productCanvasSneakers,
       category: "men",
       isSale: true,
       sizes: ["8", "9", "10", "11"],
@@ -112,7 +120,7 @@ const ShopPage = () => {
       price: 49.99,
       rating: 4.8,
       reviews: 92,
-      image: "/placeholder.svg",
+      image: productKidsShoes,
       category: "kids",
       isNew: true,
       sizes: ["1", "2", "3", "4", "5"],
@@ -125,7 +133,7 @@ const ShopPage = () => {
       price: 179.99,
       rating: 4.7,
       reviews: 145,
-      image: "/placeholder.svg",
+      image: productHikingBoots,
       category: "boots",
       sizes: ["8", "9", "10", "11", "12"],
       colors: ["Brown", "Green", "Black"]
@@ -137,7 +145,7 @@ const ShopPage = () => {
       price: 110.99,
       rating: 4.6,
       reviews: 87,
-      image: "/placeholder.svg",
+      image: productBusinessLoafers,
       category: "formal",
       sizes: ["8", "9", "10", "11", "12"],
       colors: ["Black", "Brown"]

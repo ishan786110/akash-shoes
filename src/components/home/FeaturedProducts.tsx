@@ -2,6 +2,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import productOxfordShoes from "@/assets/product-oxford-shoes.jpg";
+import productRunningSneakers from "@/assets/product-running-sneakers.jpg";
+import productWomensHeels from "@/assets/product-womens-heels.jpg";
+import productWorkBoots from "@/assets/product-work-boots.jpg";
+import productCanvasSneakers from "@/assets/product-canvas-sneakers.jpg";
+import productKidsShoes from "@/assets/product-kids-shoes.jpg";
 
 interface Product {
   id: number;
@@ -38,7 +44,7 @@ const FeaturedProducts = () => {
       originalPrice: 159.99,
       rating: 4.8,
       reviews: 124,
-      image: "/placeholder.svg",
+      image: productOxfordShoes,
       category: "Formal",
       isSale: true
     },
@@ -49,7 +55,7 @@ const FeaturedProducts = () => {
       price: 89.99,
       rating: 4.6,
       reviews: 89,
-      image: "/placeholder.svg",
+      image: productRunningSneakers,
       category: "Athletic",
       isNew: true
     },
@@ -60,7 +66,7 @@ const FeaturedProducts = () => {
       price: 95.99,
       rating: 4.7,
       reviews: 156,
-      image: "/placeholder.svg",
+      image: productWomensHeels,
       category: "Women"
     },
     {
@@ -70,7 +76,7 @@ const FeaturedProducts = () => {
       price: 149.99,
       rating: 4.9,
       reviews: 203,
-      image: "/placeholder.svg",
+      image: productWorkBoots,
       category: "Boots"
     },
     {
@@ -81,7 +87,7 @@ const FeaturedProducts = () => {
       originalPrice: 79.99,
       rating: 4.5,
       reviews: 78,
-      image: "/placeholder.svg",
+      image: productCanvasSneakers,
       category: "Casual",
       isSale: true
     },
@@ -92,7 +98,7 @@ const FeaturedProducts = () => {
       price: 49.99,
       rating: 4.8,
       reviews: 92,
-      image: "/placeholder.svg",
+      image: productKidsShoes,
       category: "Kids",
       isNew: true
     }
