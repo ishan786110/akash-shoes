@@ -135,7 +135,7 @@ const Header = () => {
                 All Shoes
               </Link>
               <Link
-                to="/shop/men"
+                to="/men"
                 className="block py-2 text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >

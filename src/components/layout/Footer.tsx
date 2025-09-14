@@ -63,17 +63,17 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/shop/men" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <Link to="/men" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Men's Shoes
                 </Link>
               </li>
               <li>
-                <Link to="/shop/women" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <Link to="/women" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Women's Shoes
                 </Link>
               </li>
               <li>
-                <Link to="/shop/kids" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <Link to="/kids" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Kids' Shoes
                 </Link>
               </li>
@@ -130,7 +130,7 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-primary-foreground/80 flex-shrink-0" />
                 <span className="text-primary-foreground/80 text-sm">
-                  +1 (555) 123-4567
+                  +91 9913897086
                 </span>
               </div>
               <div className="flex items-center space-x-3">
