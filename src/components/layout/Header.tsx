@@ -81,7 +81,7 @@ const Header = () => {
             </Button> */}
 
           {/* Mobile menu toggle */}
-          {/* <Button
+          <Button
               variant="ghost"
               size="sm"
               className="md:hidden"
@@ -89,7 +89,7 @@ const Header = () => {
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
-          </div> */}
+          {/* </div> */}
         </div>
 
         {/* Navigation */}
@@ -142,14 +142,14 @@ const Header = () => {
                 Men
               </Link>
               <Link
-                to="/shop/women"
+                to="/women"
                 className="block py-2 text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Women
               </Link>
               <Link
-                to="/shop/kids"
+                to="/kids"
                 className="block py-2 text-sm font-medium hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
