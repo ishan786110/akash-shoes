@@ -37,7 +37,7 @@ const FeaturedProducts = () => {
   //buy 
   const handleOrder = (product) => {
     const message = `Hello Akash Shoes, I want to buy: ${product.name} - ₹${product.price}`;
-    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/9913897086?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
@@ -136,89 +136,113 @@ const FeaturedProducts = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {featuredProducts.map((product) => (
-            <Card
-              key={product.id}
-              className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card"
-            >
-              <CardContent className="p-0">
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={product.image}
-                    alt={`${product.name} - ${product.brand}`}
-                    className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
+            <Card 
+  key={product.id} 
+  className={'group cursor-pointer transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card'}
+>
+  <CardContent className="p-0">
+    <div
+      className={'relative overflow-hidden rounded-t-lg'}
+    >
+      <img
+        src={product.image}
+        alt={`${product.name} - ${product.brand}`}
+        className={'object-cover transition-transform duration-300 group-hover:scale-105 w-full h-64'}
+      />
 
-                  {/* Badges */}
-                  <div className="absolute top-4 left-4 flex flex-col gap-2">
-                    {product.isNew && (
-                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-                        New
-                      </span>
-                    )}
-                    {product.isSale && (
-                      <span className="bg-sale text-white px-3 py-1 rounded-full text-xs font-medium">
-                        Sale
-                      </span>
-                    )}
-                  </div>
+      {/* Badges */}
+      <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+        {product.isNew && (
+          <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+            New
+          </span>
+        )}
+        {product.isSale && (
+          <span className="bg-sale text-white px-3 py-1 rounded-full text-xs font-medium">
+            Sale
+          </span>
+        )}
+      </div>
 
-                  {/* Favorite button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(product.id);
-                    }}
-                  >
-                    <Heart
-                      className={`w-4 h-4 ${favorites.includes(product.id)
-                          ? "fill-red-500 text-red-500"
-                          : "text-gray-600"
-                        }`}
-                    />
-                  </Button>
+      {/* Favorite button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white z-20"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleFavorite(product.id);
+        }}
+      >
+        <Heart
+          className={`w-4 h-4 ${
+            favorites.includes(product.id)
+              ? 'fill-red-500 text-red-500'
+              : 'text-gray-600'
+          }`}
+        />
+      </Button>
 
-                  {/* Add to cart overlay */}
-                  <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Button variant="secondary" size="lg" onClick={() => handleOrder(product)}>
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Buy
-                    </Button>
-                  </div>
-                </div>
+      {/* Add to cart overlay */}
+      
+        <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
+          <Button variant="secondary" size="lg" onClick={() => handleOrder(product)}>
+            <ShoppingCart className="w-4 h-4 mr-2" />
+            Buy
+          </Button>
+        </div>
+    
+    </div>
 
-                <div className="p-6">
-                  <div className="mb-2">
-                    <span className="text-sm text-muted-foreground">{product.brand}</span>
-                    <h3 className="font-semibold text-lg leading-tight">{product.name}</h3>
-                  </div>
+    <div className={'p-6 flex-1'}>
+      <div className="mb-2">
+        <span className="text-sm text-muted-foreground">{product.brand}</span>
+        <h3 className="font-semibold text-lg leading-tight">{product.name}</h3>
+      </div>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex">
-                      {renderStars(product.rating)}
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {product.rating} ({product.reviews})
-                    </span>
-                  </div>
+      {/* Rating */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex">{renderStars(product.rating)}</div>
+        <span className="text-sm text-muted-foreground">
+          {product.rating} ({product.reviews})
+        </span>
+      </div>
 
-                  {/* Price */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-price">
-                      ${product.price}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-muted-foreground line-through">
-                        ${product.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      {/* Price */}
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-xl font-bold text-price">${product.price}</span>
+        {product.originalPrice && (
+          <span className="text-sm text-muted-foreground line-through">
+            ${product.originalPrice}
+          </span>
+        )}
+      </div>
+
+      {/* Additional info for list view */}
+      {/* {viewMode === 'list' && (
+        <div className="space-y-2">
+          <div>
+            <span className="text-sm font-medium">Sizes: </span>
+            <span className="text-sm text-muted-foreground">
+              {product.sizes.join(', ')}
+            </span>
+          </div>
+          <div>
+            <span className="text-sm font-medium">Colors: </span>
+            <span className="text-sm text-muted-foreground">
+              {product.colors.join(', ')}
+            </span>
+          </div>
+          <Button className="mt-4">
+            <ShoppingCart className="w-4 h-4 mr-2" />
+            Add to Cart
+          </Button>
+        </div>
+      )} */}
+    </div>
+  </CardContent>
+</Card>
+
           ))}
         </div>
 
