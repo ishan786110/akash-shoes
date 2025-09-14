@@ -44,9 +44,13 @@ export default {
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
+          DEFAULT: "hsl(var(--product-card))",
           foreground: "hsl(var(--card-foreground))",
+          hover: "hsl(var(--product-hover))",
         },
+        price: "hsl(var(--price-color))",
+        sale: "hsl(var(--sale-color))",
+        rating: "hsl(var(--rating-color))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
