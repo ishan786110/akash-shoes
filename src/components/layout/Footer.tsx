@@ -121,21 +121,21 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold text-lg mb-4">Get in Touch</h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-primary-foreground/80" />
-                <span className="text-primary-foreground/80">
+            <div className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 text-primary-foreground/80 flex-shrink-0 mt-0.5" />
+                <span className="text-primary-foreground/80 text-sm">
                   123 Main Street, Your Town, ST 12345
                 </span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-primary-foreground/80" />
-                <span className="text-primary-foreground/80">
+                <Phone className="w-5 h-5 text-primary-foreground/80 flex-shrink-0" />
+                <span className="text-primary-foreground/80 text-sm">
                   +1 (555) 123-4567
                 </span>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-primary-foreground/80" />
-                <span className="text-primary-foreground/80">
+                <Mail className="w-5 h-5 text-primary-foreground/80 flex-shrink-0" />
+                <span className="text-primary-foreground/80 text-sm">
                   hello@stepforward.com
                 </span>
               </div>

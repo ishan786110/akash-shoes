@@ -95,30 +95,30 @@ const AboutPage = () => {
             </div>
 
             {/* Stats section */}
-            <div className="bg-primary text-primary-foreground rounded-2xl p-12 mb-16">
+            <div className="bg-primary text-primary-foreground rounded-2xl p-6 md:p-12 mb-16">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold mb-4">Our Impact Today</h2>
-                <p className="text-primary-foreground/80 text-lg">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">Our Impact Today</h2>
+                <p className="text-primary-foreground/80 text-base md:text-lg">
                   These numbers represent real people, real relationships, and real satisfaction.
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
                 <div>
-                  <div className="text-3xl font-bold mb-2">10,000+</div>
-                  <div className="text-primary-foreground/80">Happy Customers</div>
+                  <div className="text-2xl md:text-3xl font-bold mb-2">10,000+</div>
+                  <div className="text-sm md:text-base text-primary-foreground/80">Happy Customers</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold mb-2">500+</div>
-                  <div className="text-primary-foreground/80">Shoe Styles</div>
+                  <div className="text-2xl md:text-3xl font-bold mb-2">500+</div>
+                  <div className="text-sm md:text-base text-primary-foreground/80">Shoe Styles</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold mb-2">50+</div>
-                  <div className="text-primary-foreground/80">Trusted Brands</div>
+                  <div className="text-2xl md:text-3xl font-bold mb-2">50+</div>
+                  <div className="text-sm md:text-base text-primary-foreground/80">Trusted Brands</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold mb-2">25+</div>
-                  <div className="text-primary-foreground/80">Countries Served</div>
+                  <div className="text-2xl md:text-3xl font-bold mb-2">25+</div>
+                  <div className="text-sm md:text-base text-primary-foreground/80">Countries Served</div>
                 </div>
               </div>
             </div>

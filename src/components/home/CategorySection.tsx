@@ -120,7 +120,7 @@ const CategorySection = () => {
           {regularCategories.map((category) => (
             <Card key={category.id} className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
               <CardContent className="p-0">
-                <div className="relative h-48">
+                <div className="relative h-36 md:h-48">
                   <img
                     src={category.image}
                     alt={`${category.name} footwear collection`}
@@ -128,8 +128,8 @@ const CategorySection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
                   
-                  <div className="absolute bottom-4 left-4 right-4 text-primary-foreground">
-                    <h4 className="font-semibold mb-1">{category.name}</h4>
+                  <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 text-primary-foreground">
+                    <h4 className="font-semibold mb-1 text-sm md:text-base">{category.name}</h4>
                     <span className="text-xs text-primary-foreground/80">
                       {category.productCount} items
                     </span>
