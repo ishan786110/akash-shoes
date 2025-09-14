@@ -27,11 +27,18 @@ const FeaturedProducts = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
 
   const toggleFavorite = (productId: number) => {
-    setFavorites(prev => 
-      prev.includes(productId) 
+    setFavorites(prev =>
+      prev.includes(productId)
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     );
+  };
+
+  //buy 
+  const handleOrder = (product) => {
+    const message = `Hello Akash Shoes, I want to buy: ${product.name} - ₹${product.price}`;
+    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   // Mock product data
@@ -108,11 +115,10 @@ const FeaturedProducts = () => {
     return Array.from({ length: 5 }).map((_, index) => (
       <Star
         key={index}
-        className={`w-4 h-4 ${
-          index < Math.floor(rating)
+        className={`w-4 h-4 ${index < Math.floor(rating)
             ? "fill-rating text-rating"
             : "text-muted-foreground"
-        }`}
+          }`}
       />
     ));
   };
@@ -123,15 +129,15 @@ const FeaturedProducts = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Products</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover our most popular and highly-rated shoes, carefully selected for quality, 
+            Discover our most popular and highly-rated shoes, carefully selected for quality,
             comfort, and style.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {featuredProducts.map((product) => (
-            <Card 
-              key={product.id} 
+            <Card
+              key={product.id}
               className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card"
             >
               <CardContent className="p-0">
@@ -141,7 +147,7 @@ const FeaturedProducts = () => {
                     alt={`${product.name} - ${product.brand}`}
                     className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  
+
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2">
                     {product.isNew && (
@@ -167,19 +173,18 @@ const FeaturedProducts = () => {
                     }}
                   >
                     <Heart
-                      className={`w-4 h-4 ${
-                        favorites.includes(product.id)
+                      className={`w-4 h-4 ${favorites.includes(product.id)
                           ? "fill-red-500 text-red-500"
                           : "text-gray-600"
-                      }`}
+                        }`}
                     />
                   </Button>
 
                   {/* Add to cart overlay */}
                   <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Button variant="secondary" size="lg">
+                    <Button variant="secondary" size="lg" onClick={() => handleOrder(product)}>
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Add to Cart
+                      Buy
                     </Button>
                   </div>
                 </div>

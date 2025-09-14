@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +8,25 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount] = useState(3); // Mock cart count
 
+  const location = useLocation();
+
+   // Navigation items
+  const navItems = [
+    { to: "/shop", label: "All Shoes", checkParent: true },
+    { to: "/men", label: "Men" },
+    { to: "/women", label: "Women" },
+    { to: "/kids", label: "Kids" },
+    { to: "/athletic", label: "Athletic" },
+    { to: "/formal", label: "Formal" },
+    { to: "/boots", label: "Boots" },
+    { to: "/about", label: "About Us" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <div className="container mx-auto px-4">
         {/* Top bar */}
-        <div className="flex items-center justify-between py-2 border-b border-border/40">
+        {/* <div className="flex items-center justify-between py-2 border-b border-border/40">
           <div className="text-sm text-muted-foreground">
             Free shipping on orders over $50
           </div>
@@ -24,16 +38,16 @@ const Header = () => {
               Help
             </Link>
           </div>
-        </div>
+        </div> */}
 
         {/* Main header */}
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">S</span>
+              <span className="text-primary-foreground font-bold text-lg">AS</span>
             </div>
-            <span className="text-xl font-bold">StepForward</span>
+            <span className="text-xl font-bold">Akash Shoes</span>
           </Link>
 
           {/* Search bar - desktop */}
@@ -49,25 +63,25 @@ const Header = () => {
           </div>
 
           {/* Right side actions */}
-          <div className="flex items-center space-x-4">
-            {/* Account */}
-            <Button variant="ghost" size="sm" className="hidden md:flex">
+          {/* <div className="flex items-center space-x-4"> */}
+          {/* Account */}
+          {/* <Button variant="ghost" size="sm" className="hidden md:flex">
               <User className="w-4 h-4 mr-2" />
               Account
-            </Button>
+            </Button> */}
 
-            {/* Cart */}
-            <Button variant="ghost" size="sm" className="relative">
+          {/* Cart */}
+          {/* <Button variant="ghost" size="sm" className="relative">
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-price text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
-            </Button>
+            </Button> */}
 
-            {/* Mobile menu toggle */}
-            <Button
+          {/* Mobile menu toggle */}
+          {/* <Button
               variant="ghost"
               size="sm"
               className="md:hidden"
@@ -75,35 +89,25 @@ const Header = () => {
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 py-3 border-t border-border/40">
-          <Link to="/shop" className="text-sm font-medium hover:text-primary transition-colors">
-            All Shoes
-          </Link>
-          <Link to="/shop/men" className="text-sm font-medium hover:text-primary transition-colors">
-            Men
-          </Link>
-          <Link to="/shop/women" className="text-sm font-medium hover:text-primary transition-colors">
-            Women
-          </Link>
-          <Link to="/shop/kids" className="text-sm font-medium hover:text-primary transition-colors">
-            Kids
-          </Link>
-          <Link to="/shop/athletic" className="text-sm font-medium hover:text-primary transition-colors">
-            Athletic
-          </Link>
-          <Link to="/shop/formal" className="text-sm font-medium hover:text-primary transition-colors">
-            Formal
-          </Link>
-          <Link to="/shop/boots" className="text-sm font-medium hover:text-primary transition-colors">
-            Boots
-          </Link>
-          <Link to="/about" className="text-sm font-medium hover:text-primary transition-colors">
-            About Us
-          </Link>
+        <nav className="hidden md:flex items-center justify-center space-x-8 py-3 border-t border-border/40 ">
+          {navItems.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                `text-sm font-medium transition-colors px-3 py-1 rounded-md ${isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:text-primary"
+                }`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Mobile menu */}

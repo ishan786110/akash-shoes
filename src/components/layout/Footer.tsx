@@ -33,9 +33,9 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-primary-foreground text-primary rounded flex items-center justify-center">
-                <span className="font-bold text-lg">S</span>
+                <span className="font-bold text-lg">AS</span>
               </div>
-              <span className="text-xl font-bold">StepForward</span>
+              <span className="text-xl font-bold">Akash Shoes</span>
             </div>
             <p className="text-primary-foreground/80 mb-4">
               Your trusted local footwear store, now serving customers worldwide. Quality shoes for every step of your journey.
@@ -136,7 +136,7 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-primary-foreground/80 flex-shrink-0" />
                 <span className="text-primary-foreground/80 text-sm">
-                  hello@stepforward.com
+                  hello@akashshoes.com
                 </span>
               </div>
             </div>

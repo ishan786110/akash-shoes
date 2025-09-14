@@ -3,6 +3,7 @@ import Footer from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Users, Award, Heart, Truck } from "lucide-react";
+import ShopImg from "@/assets/shop-img.jpg";
 
 const AboutPage = () => {
   return (
@@ -50,7 +51,7 @@ const AboutPage = () => {
               </div>
               <div className="relative">
                 <img
-                  src="/placeholder.svg"
+                  src={ShopImg}
                   alt="Our original store front from 1999"
                   className="w-full rounded-lg shadow-lg"
                 />
