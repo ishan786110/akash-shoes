@@ -47,7 +47,7 @@ const Header = () => {
             <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">AS</span>
             </div>
-            <span className="text-xl font-bold">Akash Shoes</span>
+            <span className="text-xl font-bold">Aakash Shoes</span>
           </Link>
 
           {/* Search bar - desktop */}

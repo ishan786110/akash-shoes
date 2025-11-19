@@ -36,7 +36,7 @@ const FeaturedProducts = () => {
 
   //buy 
   const handleOrder = (product) => {
-    const message = `Hello Akash Shoes, I want to buy: ${product.name} - ₹${product.price}`;
+    const message = `Hello Aakash Shoes, I want to buy: ${product.name} - ₹${product.price}`;
     const whatsappUrl = `https://wa.me/919913897086?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
