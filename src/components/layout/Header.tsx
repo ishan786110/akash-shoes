@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount] = useState(3); // Mock cart count
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
    // Navigation items
   const navItems = [
@@ -23,7 +34,14 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header 
+      className={cn(
+        "sticky top-0 z-50 border-b transition-all duration-md ease-primary",
+        isScrolled 
+          ? "bg-background/98 backdrop-blur-md shadow-medium" 
+          : "bg-background/80 backdrop-blur-sm"
+      )}
+    >
       <div className="container mx-auto px-4">
         {/* Top bar */}
         {/* <div className="flex items-center justify-between py-2 border-b border-border/40">
@@ -80,14 +98,33 @@ const Header = () => {
               )}
             </Button> */}
 
-          {/* Mobile menu toggle */}
+           {/* Mobile menu toggle with morphing animation */}
           <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="md:hidden relative w-10 h-10"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <div className="relative w-5 h-5">
+                <span 
+                  className={cn(
+                    "absolute left-0 w-full h-0.5 bg-foreground transition-all duration-sm ease-primary",
+                    isMenuOpen ? "top-1/2 rotate-45" : "top-1"
+                  )}
+                />
+                <span 
+                  className={cn(
+                    "absolute left-0 top-1/2 w-full h-0.5 bg-foreground transition-all duration-xs ease-primary",
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  )}
+                />
+                <span 
+                  className={cn(
+                    "absolute left-0 w-full h-0.5 bg-foreground transition-all duration-sm ease-primary",
+                    isMenuOpen ? "top-1/2 -rotate-45" : "bottom-1"
+                  )}
+                />
+              </div>
             </Button>
           {/* </div> */}
         </div>
@@ -99,20 +136,27 @@ const Header = () => {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors px-3 py-1 rounded-md ${isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:text-primary"
-                }`
+                cn(
+                  "text-sm font-medium px-3 py-1 rounded-md relative group transition-colors duration-sm ease-primary",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:text-primary"
+                )
               }
             >
               {link.label}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-md ease-primary group-hover:w-full" />
             </NavLink>
           ))}
         </nav>
 
         {/* Mobile menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border/40">
+        <div 
+          className={cn(
+            "md:hidden overflow-hidden border-t border-border/40 transition-all duration-md ease-primary",
+            isMenuOpen ? "max-h-screen py-4 opacity-100" : "max-h-0 py-0 opacity-0"
+          )}
+        >
             {/* Mobile search */}
             <div className="mb-4">
               <div className="relative">
@@ -127,51 +171,22 @@ const Header = () => {
 
             {/* Mobile navigation */}
             <nav className="space-y-2">
-              <Link
-                to="/shop"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                All Shoes
-              </Link>
-              <Link
-                to="/men"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Men
-              </Link>
-              <Link
-                to="/women"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Women
-              </Link>
-              <Link
-                to="/kids"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Kids
-              </Link>
-              <Link
-                to="/about"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About Us
-              </Link>
-              <Link
-                to="/account"
-                className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                My Account
-              </Link>
+              {navItems.map((link, index) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={cn(
+                    "block py-2 text-sm font-medium hover:text-primary transition-all duration-sm ease-primary",
+                    isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                  )}
+                  style={{ transitionDelay: isMenuOpen ? `${index * 60}ms` : "0ms" }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           </div>
-        )}
       </div>
     </header>
   );

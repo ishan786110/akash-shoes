@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 import categoryMen from "@/assets/category-men.jpg";
 import categoryWomen from "@/assets/category-women.jpg";
 import categoryAthletic from "@/assets/category-athletic.jpg";
@@ -85,16 +87,28 @@ const CategorySection = () => {
 
         {/* Featured categories */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {featuredCategories.map((category) => (
-            <Card key={category.id} className="group cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-0">
-                <div className="relative h-80">
-                  <img
-                    src={category.image}
-                    alt={`${category.name} footwear collection`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+          {featuredCategories.map((category, index) => {
+            const { ref, isVisible } = useScrollAnimation({ threshold: 0.2 });
+            return (
+              <div
+                key={category.id}
+                ref={ref}
+                className={cn(
+                  "transition-all duration-md ease-primary",
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                )}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <Card className="group cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-strong transition-all duration-md ease-primary hover:-translate-y-2">
+                  <CardContent className="p-0">
+                    <div className="relative h-80">
+                      <img
+                        src={category.image}
+                        alt={`${category.name} footwear collection`}
+                        className="w-full h-full object-cover transition-transform duration-lg ease-primary group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
                   
                   <div className="absolute bottom-6 left-6 right-6 text-primary-foreground">
                     <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
@@ -108,31 +122,45 @@ const CategorySection = () => {
                       <Button 
                         variant="secondary" 
                         size="sm"
-                        className="group-hover:translate-x-1 transition-transform duration-300"
+                        className="group transition-all duration-sm ease-elastic hover:scale-105"
                       >
                         Shop Now
-                        <ArrowRight className="ml-2 w-4 h-4" />
+                        <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-sm ease-elastic group-hover:translate-x-1" />
                       </Button>
                     </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          ))}
+          </div>
+        );
+      })}
         </div>
 
         {/* Regular categories grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {regularCategories.map((category) => (
-            <Card key={category.id} className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
-              <CardContent className="p-0">
-                <div className="relative h-36 md:h-48">
-                  <img
-                    src={category.image}
-                    alt={`${category.name} footwear collection`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
+          {regularCategories.map((category, index) => {
+            const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
+            return (
+              <div
+                key={category.id}
+                ref={ref}
+                className={cn(
+                  "transition-all duration-md ease-primary",
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                )}
+                style={{ transitionDelay: `${index * 60}ms` }}
+              >
+                <Card className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-medium transition-all duration-md ease-primary hover:-translate-y-1">
+                  <CardContent className="p-0">
+                    <div className="relative h-36 md:h-48">
+                      <img
+                        src={category.image}
+                        alt={`${category.name} footwear collection`}
+                        className="w-full h-full object-cover transition-transform duration-lg ease-primary group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
                   
                   <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 text-primary-foreground">
                     <h4 className="font-semibold mb-1 text-sm md:text-base">{category.name}</h4>
@@ -143,14 +171,16 @@ const CategorySection = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          </div>
+        );
+      })}
         </div>
 
         {/* CTA section */}
         <div className="text-center mt-12">
-          <Button size="lg" className="px-8">
+          <Button size="lg" className="px-8 group transition-all duration-sm ease-elastic hover:scale-105">
             Explore All Categories
-            <ArrowRight className="ml-2 w-5 h-5" />
+            <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-sm ease-elastic group-hover:translate-x-1" />
           </Button>
         </div>
       </div>
