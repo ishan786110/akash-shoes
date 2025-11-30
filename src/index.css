@@ -49,9 +49,21 @@ All colors MUST be HSL.
     --shadow-medium: 0 4px 16px -4px hsl(25 25% 12% / 0.15);
     --shadow-strong: 0 8px 32px -8px hsl(25 25% 12% / 0.25);
     
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Animation timing scale */
+    --timing-xs: 120ms;
+    --timing-sm: 200ms;
+    --timing-md: 350ms;
+    --timing-lg: 600ms;
+    --timing-xl: 900ms;
+    
+    /* Animation easings */
+    --ease-primary: cubic-bezier(0.22, 0.9, 0.35, 1);
+    --ease-elastic: cubic-bezier(0.18, 1.2, 0.36, 1);
+    
+    /* Transitions */
+    --transition-smooth: all var(--timing-md) var(--ease-primary);
+    --transition-elastic: all var(--timing-sm) var(--ease-elastic);
+    --transition-fast: all var(--timing-xs) var(--ease-primary);
 
     --radius: 0.5rem;
 
@@ -118,5 +130,17 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Accessibility: Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
