@@ -223,7 +223,7 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
             <div className="space-y-2">
               <Label htmlFor="originalPrice">Original Price *</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                 <Input
                   id="originalPrice"
                   type="number"
@@ -240,7 +240,7 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
             <div className="space-y-2">
               <Label htmlFor="discountPrice">Discount Price</Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
                 <Input
                   id="discountPrice"
                   type="number"
