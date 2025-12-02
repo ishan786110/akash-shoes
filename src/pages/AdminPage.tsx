@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import AddProductDialog from "@/components/admin/AddProductDialog";
 import {
   Table,
   TableBody,
@@ -54,6 +54,7 @@ const AdminPage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [addProductOpen, setAddProductOpen] = useState(false);
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation({ threshold: 0.1 });
   const { ref: tableRef, isVisible: tableVisible } = useScrollAnimation({ threshold: 0.1 });
 
@@ -148,7 +149,10 @@ const AdminPage = () => {
                 Product Management
               </h2>
             </div>
-            <Button className="gap-2 transition-all duration-sm hover:scale-[1.02]">
+            <Button 
+              onClick={() => setAddProductOpen(true)}
+              className="gap-2 transition-all duration-sm hover:scale-[1.02]"
+            >
               <Plus size={18} />
               Add Product
             </Button>
@@ -283,6 +287,9 @@ const AdminPage = () => {
           </div>
         </div>
       </main>
+
+      {/* Add Product Dialog */}
+      <AddProductDialog open={addProductOpen} onOpenChange={setAddProductOpen} />
     </div>
   );
 };
