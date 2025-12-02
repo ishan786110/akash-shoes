@@ -515,10 +515,10 @@ const ShopPage = () => {
 
                       {/* Price */}
                       <div className="flex items-center gap-2 mb-4">
-                        <span className="text-xl font-bold text-price">${product.price}</span>
+                        <span className="text-xl font-bold text-price">₹{product.price}</span>
                         {product.originalPrice && (
                           <span className="text-sm text-muted-foreground line-through">
-                            ${product.originalPrice}
+                            ₹{product.originalPrice}
                           </span>
                         )}
                       </div>

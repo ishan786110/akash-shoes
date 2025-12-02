@@ -67,7 +67,7 @@ const AdminPage = () => {
     { label: "Total Products", value: "156", change: "+12%", icon: Package },
     { label: "Total Orders", value: "1,234", change: "+8%", icon: ShoppingBag },
     { label: "Total Customers", value: "892", change: "+15%", icon: Users },
-    { label: "Revenue", value: "$45,678", change: "+23%", icon: BarChart3 },
+    { label: "Revenue", value: "₹45,678", change: "+23%", icon: BarChart3 },
   ];
 
   return (
@@ -239,7 +239,7 @@ const AdminPage = () => {
                         {product.category}
                       </TableCell>
                       <TableCell className="text-foreground">
-                        ${product.price.toFixed(2)}
+                        ₹{product.price.toFixed(2)}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {product.stock}
