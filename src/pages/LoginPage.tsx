@@ -6,24 +6,32 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { ref: formRef, isVisible: formVisible } = useScrollAnimation({ threshold: 0.1 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     setIsLoading(true);
-    
-    // Simulate login - frontend only for now
-    setTimeout(() => {
+
+    try {
+      // Sign in with Firebase
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/setth"); // Redirect to admin on success
+    } catch (err: any) {
+      setError(err.message || "Invalid email or password");
+    } finally {
       setIsLoading(false);
-      navigate("/admin");
-    }, 1000);
+    }
   };
 
   return (
@@ -41,7 +49,6 @@ const LoginPage = () => {
           formVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         )}
       >
-        {/* Logo/Brand */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-display font-bold text-foreground mb-2">
             Admin Login
@@ -51,7 +58,6 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Login Form */}
         <form
           onSubmit={handleSubmit}
           className="bg-card border border-border rounded-2xl p-8 shadow-elegant space-y-6"
@@ -64,7 +70,7 @@ const LoginPage = () => {
             <Input
               id="email"
               type="email"
-              placeholder="admin@example.com"
+              placeholder="admin@aakashshoes.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="h-12 bg-background border-border focus:border-primary transition-all duration-sm"
@@ -96,6 +102,11 @@ const LoginPage = () => {
               </button>
             </div>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <p className="text-destructive text-sm text-center">{error}</p>
+          )}
 
           {/* Submit Button */}
           <Button

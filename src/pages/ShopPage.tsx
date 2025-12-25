@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Star, Heart, ShoppingCart, Filter, Grid, List } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import productOxfordShoes from "@/assets/product-oxford-shoes.jpg";
 import productRunningSneakers from "@/assets/product-running-sneakers.jpg";
@@ -15,30 +15,47 @@ import productCanvasSneakers from "@/assets/product-canvas-sneakers.jpg";
 import productKidsShoes from "@/assets/product-kids-shoes.jpg";
 import productHikingBoots from "@/assets/product-hiking-boots.jpg";
 import productBusinessLoafers from "@/assets/product-business-loafers.jpg";
-
-interface Product {
-  id: number;
-  name: string;
-  brand: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviews: number;
-  image: string;
-  category: string;
-  isNew?: boolean;
-  isSale?: boolean;
-  sizes: string[];
-  colors: string[];
-}
+import { Product } from "@/lib/utils";
+import { onValue, ref } from "firebase/database";
+import { db } from "@/firebase";
 
 const ShopPage = () => {
   const { category } = useParams();
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('featured');
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
-  const toggleFavorite = (productId: number) => {
+  // Fetch products in real-time
+  useEffect(() => {
+    const productsRef = ref(db, "products");
+
+    const unsubscribe = onValue(
+      productsRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const productsList: Product[] = Object.entries(data).map(([key, value]: [string, any]) => ({
+            id: key,
+            ...value,
+          }));
+          setAllProducts(productsList);
+        } else {
+          setAllProducts([]);
+        }
+        // setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching products:", error);
+        // setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+
+  const toggleFavorite = (productId: string) => {
     setFavorites(prev =>
       prev.includes(productId)
         ? prev.filter(id => id !== productId)
@@ -47,289 +64,11 @@ const ShopPage = () => {
   };
 
   //buy 
-  const handleOrder = (product) => {
-    const message = `Hello Aakash Shoes, I want to buy: ${product.name} - ₹${product.price}`;
+  const handleOrder = (product: Product) => {
+    const message = `Hello Aakash Shoes, I want to buy: ${product.name} - ₹${product.discountPrice ? product.discountPrice : product.originalPrice}`;
     const whatsappUrl = `https://wa.me/919913897086?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
-
-  // Mock product data
-  const allProducts: Product[] = [
-    {
-      id: 1,
-      name: "Classic Oxford Leather Shoes",
-      brand: "Premium Line",
-      price: 129.99,
-      originalPrice: 159.99,
-      rating: 4.8,
-      reviews: 124,
-      image: productOxfordShoes,
-      category: "formal",
-      isSale: true,
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Black", "Brown"]
-    },
-    {
-      id: 2,
-      name: "Athletic Running Sneakers",
-      brand: "SportTech",
-      price: 89.99,
-      rating: 4.6,
-      reviews: 89,
-      image: productRunningSneakers,
-      category: "athletic",
-      isNew: true,
-      sizes: ["7", "8", "9", "10", "11"],
-      colors: ["White", "Black", "Blue"]
-    },
-    {
-      id: 3,
-      name: "Women's Elegant Heels",
-      brand: "Elegance",
-      price: 95.99,
-      rating: 4.7,
-      reviews: 156,
-      image: productWomensHeels,
-      category: "women",
-      sizes: ["6", "7", "8", "9", "10"],
-      colors: ["Black", "Red", "Nude"]
-    },
-    {
-      id: 4,
-      name: "Rugged Work Boots",
-      brand: "ToughWear",
-      price: 149.99,
-      rating: 4.9,
-      reviews: 203,
-      image: productWorkBoots,
-      category: "boots",
-      sizes: ["8", "9", "10", "11", "12", "13"],
-      colors: ["Brown", "Black"]
-    },
-    {
-      id: 5,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 6,
-      name: "Kids Adventure Shoes",
-      brand: "Little Steps",
-      price: 49.99,
-      rating: 4.8,
-      reviews: 92,
-      image: productKidsShoes,
-      category: "kids",
-      isNew: true,
-      sizes: ["1", "2", "3", "4", "5"],
-      colors: ["Blue", "Pink", "Green"]
-    },
-    {
-      id: 7,
-      name: "Hiking Boots",
-      brand: "TrailMaster",
-      price: 179.99,
-      rating: 4.7,
-      reviews: 145,
-      image: productHikingBoots,
-      category: "boots",
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Brown", "Green", "Black"]
-    },
-    {
-      id: 8,
-      name: "Business Loafers",
-      brand: "Executive",
-      price: 110.99,
-      rating: 4.6,
-      reviews: 87,
-      image: productBusinessLoafers,
-      category: "formal",
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Black", "Brown"]
-    },
-    {
-      id: 9,
-      name: "Classic Oxford Leather Shoes",
-      brand: "Premium Line",
-      price: 129.99,
-      originalPrice: 159.99,
-      rating: 4.8,
-      reviews: 124,
-      image: productOxfordShoes,
-      category: "formal",
-      isSale: true,
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Black", "Brown"]
-    },
-    {
-      id: 10,
-      name: "Athletic Running Sneakers",
-      brand: "SportTech",
-      price: 89.99,
-      rating: 4.6,
-      reviews: 89,
-      image: productRunningSneakers,
-      category: "athletic",
-      isNew: true,
-      sizes: ["7", "8", "9", "10", "11"],
-      colors: ["White", "Black", "Blue"]
-    },
-    {
-      id: 11,
-      name: "Women's Elegant Heels",
-      brand: "Elegance",
-      price: 95.99,
-      rating: 4.7,
-      reviews: 156,
-      image: productWomensHeels,
-      category: "women",
-      sizes: ["6", "7", "8", "9", "10"],
-      colors: ["Black", "Red", "Nude"]
-    },
-    {
-      id: 12,
-      name: "Rugged Work Boots",
-      brand: "ToughWear",
-      price: 149.99,
-      rating: 4.9,
-      reviews: 203,
-      image: productWorkBoots,
-      category: "boots",
-      sizes: ["8", "9", "10", "11", "12", "13"],
-      colors: ["Brown", "Black"]
-    },
-    {
-      id: 13,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 17,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 18,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 19,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 20,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 21,
-      name: "Casual Canvas Sneakers",
-      brand: "StreetStyle",
-      price: 59.99,
-      originalPrice: 79.99,
-      rating: 4.5,
-      reviews: 78,
-      image: productCanvasSneakers,
-      category: "men",
-      isSale: true,
-      sizes: ["8", "9", "10", "11"],
-      colors: ["White", "Navy", "Gray"]
-    },
-    {
-      id: 14,
-      name: "Kids Adventure Shoes",
-      brand: "Little Steps",
-      price: 49.99,
-      rating: 4.8,
-      reviews: 92,
-      image: productKidsShoes,
-      category: "kids",
-      isNew: true,
-      sizes: ["1", "2", "3", "4", "5"],
-      colors: ["Blue", "Pink", "Green"]
-    },
-    {
-      id: 15,
-      name: "Hiking Boots",
-      brand: "TrailMaster",
-      price: 179.99,
-      rating: 4.7,
-      reviews: 145,
-      image: productHikingBoots,
-      category: "boots",
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Brown", "Green", "Black"]
-    },
-    {
-      id: 16,
-      name: "Business Loafers",
-      brand: "Executive",
-      price: 110.99,
-      rating: 4.6,
-      reviews: 87,
-      image: productBusinessLoafers,
-      category: "formal",
-      sizes: ["8", "9", "10", "11", "12"],
-      colors: ["Black", "Brown"]
-    }
-  ];
 
   // Filter products based on category
   const filteredProducts = category && category !== 'all'
@@ -450,7 +189,7 @@ const ShopPage = () => {
                         }`}
                     >
                       <img
-                        src={product.image}
+                        src={product.imageUrl}
                         alt={`${product.name} - ${product.brand}`}
                         className={`object-cover transition-transform duration-300 group-hover:scale-105 ${viewMode === 'list' ? 'w-full h-full' : 'w-full h-64'
                           }`}
@@ -463,7 +202,7 @@ const ShopPage = () => {
                             New
                           </span>
                         )}
-                        {product.isSale && (
+                        {product.isOnSale && (
                           <span className="bg-sale text-white px-3 py-1 rounded-full text-xs font-medium">
                             Sale
                           </span>
@@ -509,16 +248,16 @@ const ShopPage = () => {
                       <div className="flex items-center gap-2 mb-3">
                         <div className="flex">{renderStars(product.rating)}</div>
                         <span className="text-sm text-muted-foreground">
-                          {product.rating} ({product.reviews})
+                          {product.rating} ({product.rating})
                         </span>
                       </div>
 
                       {/* Price */}
                       <div className="flex items-center gap-2 mb-4">
-                        <span className="text-xl font-bold text-price">₹{product.price}</span>
-                        {product.originalPrice && (
+                        <span className="text-xl font-bold text-price">₹{product.originalPrice}</span>
+                        {product.discountPrice && (
                           <span className="text-sm text-muted-foreground line-through">
-                            ₹{product.originalPrice}
+                            ₹{product.discountPrice}
                           </span>
                         )}
                       </div>

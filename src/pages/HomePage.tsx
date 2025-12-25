@@ -5,6 +5,7 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import CategorySection from "@/components/home/CategorySection";
 
 const HomePage = () => {
+
   return (
     <div className="min-h-screen">
       <Header />

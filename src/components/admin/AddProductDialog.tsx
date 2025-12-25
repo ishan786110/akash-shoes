@@ -1,4 +1,6 @@
-import { useState } from "react";
+// components/admin/AddProductDialog.tsx
+
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,9 +23,56 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// Firebase (only database needed now)
+import { ref as dbRef, push, set, update } from "firebase/database";
+import { db } from "@/firebase";
+
+// Cloudinary upload helper
+const uploadToCloudinary = async (file: File): Promise<string> => {
+  const cloudName = "dico29syt";
+  const uploadPreset = "shoesimages";
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok || data.error) {
+    throw new Error(data.error?.message || "Cloudinary upload failed");
+  }
+
+  return data.secure_url;
+};
+
+interface Product {
+  id?: string;
+  name: string;
+  brand?: string | null;
+  category: string;
+  description?: string | null;
+  originalPrice: number;
+  discountPrice?: number | null;
+  stock: number;
+  rating: number;
+  isOnSale: boolean;
+  isNew: boolean;
+  imageUrl: string;
+}
+
 interface AddProductDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  product?: Product | null;
+  onSuccess?: () => void;
 }
 
 const categories = [
@@ -36,7 +85,14 @@ const categories = [
   "Casual",
 ];
 
-const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
+const AddProductDialog = ({
+  open,
+  onOpenChange,
+  product,
+  onSuccess,
+}: AddProductDialogProps) => {
+  const isEditMode = !!product;
+
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -49,14 +105,56 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
     isOnSale: false,
     isNew: false,
     image: null as File | null,
+    currentImageUrl: "",
+    removeImage: false, // New flag to track if user wants to remove current image
   });
+
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [hoverRating, setHoverRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (open && product) {
+      setFormData({
+        name: product.name,
+        brand: product.brand || "",
+        category: product.category,
+        description: product.description || "",
+        originalPrice: product.originalPrice.toString(),
+        discountPrice: product.discountPrice ? product.discountPrice.toString() : "",
+        stock: product.stock.toString(),
+        rating: product.rating,
+        isOnSale: product.isOnSale,
+        isNew: product.isNew,
+        image: null,
+        currentImageUrl: product.imageUrl,
+        removeImage: false,
+      });
+      setImagePreview(product.imageUrl);
+    } else if (open && !product) {
+      setFormData({
+        name: "",
+        brand: "",
+        category: "",
+        description: "",
+        originalPrice: "",
+        discountPrice: "",
+        stock: "",
+        rating: 0,
+        isOnSale: false,
+        isNew: false,
+        image: null,
+        currentImageUrl: "",
+        removeImage: false,
+      });
+      setImagePreview(null);
+    }
+  }, [open, product]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData({ ...formData, image: file });
+      setFormData({ ...formData, image: file, removeImage: false });
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -66,29 +164,8 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
   };
 
   const removeImage = () => {
-    setFormData({ ...formData, image: null });
+    setFormData({ ...formData, image: null, removeImage: true });
     setImagePreview(null);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Product Data:", formData);
-    // Reset form and close dialog
-    setFormData({
-      name: "",
-      brand: "",
-      category: "",
-      description: "",
-      originalPrice: "",
-      discountPrice: "",
-      stock: "",
-      rating: 0,
-      isOnSale: false,
-      isNew: false,
-      image: null,
-    });
-    setImagePreview(null);
-    onOpenChange(false);
   };
 
   const renderStars = () => {
@@ -117,18 +194,82 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
     });
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.name || !formData.category || !formData.originalPrice) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    if (!formData.image && !formData.currentImageUrl && !formData.removeImage) {
+      alert("Please upload an image.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      let finalImageUrl = formData.currentImageUrl;
+
+      // If user uploaded a new image → upload to Cloudinary
+      if (formData.image) {
+        finalImageUrl = await uploadToCloudinary(formData.image);
+      }
+
+      // If user clicked "remove image" → clear imageUrl
+      if (formData.removeImage) {
+        finalImageUrl = "";
+      }
+
+      const productData = {
+        name: formData.name.trim(),
+        brand: formData.brand.trim() || null,
+        category: formData.category.toLowerCase(),
+        description: formData.description.trim() || null,
+        originalPrice: Number(formData.originalPrice),
+        discountPrice: formData.discountPrice ? Number(formData.discountPrice) : null,
+        stock: Number(formData.stock) || 0,
+        rating: formData.rating,
+        isOnSale: formData.isOnSale,
+        isNew: formData.isNew,
+        imageUrl: finalImageUrl,
+        updatedAt: new Date().toISOString(),
+      };
+
+      if (isEditMode && product?.id) {
+        const productRef = dbRef(db, `products/${product.id}`);
+        await update(productRef, productData);
+      } else {
+        const productsRef = dbRef(db, "products");
+        const newProductRef = push(productsRef);
+        await set(newProductRef, { ...productData, createdAt: new Date().toISOString() });
+      }
+
+      onSuccess?.();
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error("Error saving product:", error);
+      alert("Failed to save product: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-display">Add New Product</DialogTitle>
+          <DialogTitle className="text-xl font-display">
+            {isEditMode ? "Edit Product" : "Add New Product"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
           {/* Image Upload */}
           <div className="space-y-2">
-            <Label>Product Image</Label>
-            <div className="flex items-start gap-4">
+            <Label>Product Image *</Label>
+            <div className="flex items-start gap-4 flex-wrap">
               {imagePreview ? (
                 <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
                   <img
@@ -147,7 +288,7 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
               ) : (
                 <label className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-sm">
                   <Upload size={24} className="text-muted-foreground mb-2" />
-                  <span className="text-xs text-muted-foreground">Upload</span>
+                  <span className="text-xs text-muted-foreground">Upload Image</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -159,7 +300,8 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
             </div>
           </div>
 
-          {/* Product Name & Brand */}
+          {/* Rest of the form remains unchanged */}
+          {/* Name & Brand */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Product Name *</Label>
@@ -317,11 +459,12 @@ const AddProductDialog = ({ open, onOpenChange }: AddProductDialogProps) => {
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
+              disabled={loading}
             >
               Cancel
             </Button>
-            <Button type="submit" className="gap-2">
-              Add Product
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : isEditMode ? "Update Product" : "Add Product"}
             </Button>
           </DialogFooter>
         </form>
