@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, Heart, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import productOxfordShoes from "@/assets/product-oxford-shoes.jpg";
@@ -33,6 +34,7 @@ interface Product {
 }
 
 const FeaturedProducts = () => {
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState<number[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,7 +188,12 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline" className="transition-all duration-sm ease-elastic hover:scale-105">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="transition-all duration-sm ease-elastic hover:scale-105"
+            onClick={() => navigate("/shop")}
+          >
             View All Products
           </Button>
         </div>
