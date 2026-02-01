@@ -18,6 +18,7 @@ interface Category {
   image: string;
   productCount: number;
   featured: boolean;
+  path: string;
 }
 
 const CategorySection = () => {
@@ -30,7 +31,8 @@ const CategorySection = () => {
       description: "Professional and casual footwear for every occasion",
       image: categoryMen,
       productCount: 127,
-      featured: true
+      featured: true,
+      path: "/men"
     },
     {
       id: "women",
@@ -38,7 +40,8 @@ const CategorySection = () => {
       description: "Elegant styles from casual to sophisticated",
       image: categoryWomen,
       productCount: 156,
-      featured: true
+      featured: true,
+      path: "/women"
     },
     {
       id: "athletic",
@@ -46,7 +49,8 @@ const CategorySection = () => {
       description: "Performance footwear for active lifestyles",
       image: categoryAthletic,
       productCount: 89,
-      featured: false
+      featured: false,
+      path: "/athletic"
     },
     {
       id: "boots",
@@ -54,7 +58,8 @@ const CategorySection = () => {
       description: "Durable protection meets timeless style",
       image: categoryBoots,
       productCount: 76,
-      featured: false
+      featured: false,
+      path: "/boots"
     },
     {
       id: "kids",
@@ -62,7 +67,8 @@ const CategorySection = () => {
       description: "Growing feet deserve the best comfort and quality",
       image: categoryKids,
       productCount: 94,
-      featured: false
+      featured: false,
+      path: "/kids"
     },
     {
       id: "formal",
@@ -70,7 +76,8 @@ const CategorySection = () => {
       description: "Make the right impression with professional footwear",
       image: categoryFormal,
       productCount: 68,
-      featured: false
+      featured: false,
+      path: "/formal"
     }
   ];
 
@@ -104,7 +111,7 @@ const CategorySection = () => {
               >
             <Card 
               className="group cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-strong transition-all duration-md ease-primary hover:-translate-y-2"
-              onClick={() => navigate(`/shop?category=${category.id}`)}
+              onClick={() => navigate(category.path)}
             >
                   <CardContent className="p-0">
                     <div className="relative h-80">
@@ -159,7 +166,7 @@ const CategorySection = () => {
               >
                 <Card 
                   className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-medium transition-all duration-md ease-primary hover:-translate-y-1"
-                  onClick={() => navigate(`/shop?category=${category.id}`)}
+                  onClick={() => navigate(category.path)}
                 >
                   <CardContent className="p-0">
                     <div className="relative h-36 md:h-48">
