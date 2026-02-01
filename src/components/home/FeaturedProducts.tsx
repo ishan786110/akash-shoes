@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star, Heart, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import productOxfordShoes from "@/assets/product-oxford-shoes.jpg";
@@ -10,7 +10,14 @@ import productWomensHeels from "@/assets/product-womens-heels.jpg";
 import productWorkBoots from "@/assets/product-work-boots.jpg";
 import productCanvasSneakers from "@/assets/product-canvas-sneakers.jpg";
 import productKidsShoes from "@/assets/product-kids-shoes.jpg";
-
+// 🔥 Firestore
+import {
+  collection,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
+import { db } from "@/firebase";
+import { FeaturedProductCard } from "../ui/featuredProductCard";
 interface Product {
   id: number;
   name: string;
@@ -27,6 +34,8 @@ interface Product {
 
 const FeaturedProducts = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const toggleFavorite = (productId: number) => {
     setFavorites(prev =>
@@ -118,12 +127,35 @@ const FeaturedProducts = () => {
       <Star
         key={index}
         className={`w-4 h-4 ${index < Math.floor(rating)
-            ? "fill-rating text-rating"
-            : "text-muted-foreground"
+          ? "fill-rating text-rating"
+          : "text-muted-foreground"
           }`}
       />
     ));
   };
+
+  // 🔥 Fetch products from Firestore (READ ONLY)
+  useEffect(() => {
+    const q = query(collection(db, "products"));
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const products: Product[] = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...(docSnap.data() as Product),
+        }));
+        setAllProducts(products);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Firestore fetch error:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <section className="py-16 bg-muted/30">
@@ -137,105 +169,20 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {featuredProducts.map((product, index) => {
-            const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
-            return (
-              <div
+
+          {allProducts
+            .slice(0, 6)
+            .map((product, index) => (
+              <FeaturedProductCard
                 key={product.id}
-                ref={ref}
-                className={cn(
-                  "transition-all duration-md ease-primary",
-                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                )}
-                style={{ transitionDelay: `${index * 60}ms` }}
-              >
-                <Card className="group cursor-pointer border-0 bg-card hover:shadow-strong transition-all duration-md ease-primary hover:-translate-y-2">
-                  <CardContent className="p-0">
-                    <div className="relative overflow-hidden rounded-t-lg">
-                      <img
-                        src={product.image}
-                        alt={`${product.name} - ${product.brand}`}
-                        className="object-cover w-full h-64 transition-transform duration-lg ease-primary group-hover:scale-110"
-                        loading="lazy"
-                      />
-
-      {/* Badges */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
-        {product.isNew && (
-          <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-            New
-          </span>
-        )}
-        {product.isSale && (
-          <span className="bg-sale text-white px-3 py-1 rounded-full text-xs font-medium">
-            Sale
-          </span>
-        )}
-      </div>
-
-                      {/* Favorite button */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white z-20 transition-all duration-xs ease-elastic hover:scale-110"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(product.id);
-                        }}
-                      >
-                        <Heart
-                          className={cn(
-                            "w-4 h-4 transition-colors duration-xs",
-                            favorites.includes(product.id)
-                              ? "fill-red-500 text-red-500"
-                              : "text-gray-600"
-                          )}
-                        />
-                      </Button>
-
-                      {/* Add to cart overlay */}
-                      <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all duration-md ease-primary flex items-center justify-center z-10">
-                        <Button 
-                          variant="secondary" 
-                          size="lg" 
-                          onClick={() => handleOrder(product)}
-                          className="animate-scale-in"
-                        >
-                          <ShoppingCart className="w-4 h-4 mr-2" />
-                          Buy
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="p-6 flex-1">
-      <div className="mb-2">
-        <span className="text-sm text-muted-foreground">{product.brand}</span>
-        <h3 className="font-semibold text-lg leading-tight">{product.name}</h3>
-      </div>
-
-      {/* Rating */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="flex">{renderStars(product.rating)}</div>
-                        <span className="text-sm text-muted-foreground">
-                          {product.rating} ({product.reviews})
-                        </span>
-                      </div>
-
-                      {/* Price */}
-                      <div className="flex items-center gap-2 mb-4">
-                        <span className="text-xl font-bold text-price">₹{product.price}</span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            ₹{product.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })}
+                product={product}
+                index={index}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                handleOrder={handleOrder}
+                renderStars={renderStars}
+              />
+            ))}
         </div>
 
         <div className="text-center">

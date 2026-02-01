@@ -1,5 +1,3 @@
-// components/admin/AddProductDialog.tsx
-
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -23,11 +21,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Firebase (only database needed now)
-import { ref as dbRef, push, set, update } from "firebase/database";
+// 🔥 Firestore ONLY
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "@/firebase";
 
-// Cloudinary upload helper
+// ---------- Cloudinary Upload ----------
 const uploadToCloudinary = async (file: File): Promise<string> => {
   const cloudName = "dico29syt";
   const uploadPreset = "shoesimages";
@@ -36,24 +40,21 @@ const uploadToCloudinary = async (file: File): Promise<string> => {
   formData.append("file", file);
   formData.append("upload_preset", uploadPreset);
 
-  const response = await fetch(
+  const res = await fetch(
     `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    }
+    { method: "POST", body: formData }
   );
 
-  const data = await response.json();
-
-  if (!response.ok || data.error) {
-    throw new Error(data.error?.message || "Cloudinary upload failed");
+  const data = await res.json();
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || "Image upload failed");
   }
 
   return data.secure_url;
 };
 
-interface Product {
+// ---------- Types ----------
+export interface Product {
   id?: string;
   name: string;
   brand?: string | null;
@@ -68,7 +69,7 @@ interface Product {
   imageUrl: string;
 }
 
-interface AddProductDialogProps {
+interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   product?: Product | null;
@@ -76,24 +77,25 @@ interface AddProductDialogProps {
 }
 
 const categories = [
-  "Formal",
-  "Athletic",
-  "Boots",
-  "Women",
-  "Men",
-  "Kids",
-  "Casual",
+  "formal",
+  "athletic",
+  "boots",
+  "women",
+  "men",
+  "kids",
+  "casual",
 ];
 
+// ---------- Component ----------
 const AddProductDialog = ({
   open,
   onOpenChange,
   product,
   onSuccess,
-}: AddProductDialogProps) => {
-  const isEditMode = !!product;
+}: Props) => {
+  const isEditMode = Boolean(product);
 
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     brand: "",
     category: "",
@@ -106,22 +108,23 @@ const AddProductDialog = ({
     isNew: false,
     image: null as File | null,
     currentImageUrl: "",
-    removeImage: false, // New flag to track if user wants to remove current image
+    removeImage: false,
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [hoverRating, setHoverRating] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // ---------- Populate edit mode ----------
   useEffect(() => {
     if (open && product) {
-      setFormData({
+      setForm({
         name: product.name,
         brand: product.brand || "",
         category: product.category,
         description: product.description || "",
         originalPrice: product.originalPrice.toString(),
-        discountPrice: product.discountPrice ? product.discountPrice.toString() : "",
+        discountPrice: product.discountPrice?.toString() || "",
         stock: product.stock.toString(),
         rating: product.rating,
         isOnSale: product.isOnSale,
@@ -131,8 +134,10 @@ const AddProductDialog = ({
         removeImage: false,
       });
       setImagePreview(product.imageUrl);
-    } else if (open && !product) {
-      setFormData({
+    }
+
+    if (open && !product) {
+      setForm({
         name: "",
         brand: "",
         category: "",
@@ -151,40 +156,39 @@ const AddProductDialog = ({
     }
   }, [open, product]);
 
+  // ---------- Image ----------
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFormData({ ...formData, image: file, removeImage: false });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    setForm({ ...form, image: file, removeImage: false });
+
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const removeImage = () => {
-    setFormData({ ...formData, image: null, removeImage: true });
+    setForm({ ...form, image: null, removeImage: true });
     setImagePreview(null);
   };
 
-  const renderStars = () => {
-    return Array.from({ length: 5 }, (_, index) => {
-      const starValue = index + 1;
+  // ---------- Rating ----------
+  const renderStars = () =>
+    Array.from({ length: 5 }).map((_, i) => {
+      const value = i + 1;
       return (
         <button
-          key={index}
+          key={i}
           type="button"
-          onClick={() => setFormData({ ...formData, rating: starValue })}
-          onMouseEnter={() => setHoverRating(starValue)}
+          onClick={() => setForm({ ...form, rating: value })}
+          onMouseEnter={() => setHoverRating(value)}
           onMouseLeave={() => setHoverRating(0)}
-          className="transition-transform duration-xs hover:scale-110"
         >
           <Star
-            size={24}
+            size={22}
             className={cn(
-              "transition-colors duration-xs",
-              (hoverRating || formData.rating) >= starValue
+              (hoverRating || form.rating) >= value
                 ? "fill-yellow-400 text-yellow-400"
                 : "text-muted-foreground"
             )}
@@ -192,269 +196,232 @@ const AddProductDialog = ({
         </button>
       );
     });
-  };
 
+  // ---------- Submit ----------
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.category || !formData.originalPrice) {
-      alert("Please fill all required fields.");
-      return;
-    }
-
-    if (!formData.image && !formData.currentImageUrl && !formData.removeImage) {
-      alert("Please upload an image.");
+    if (!form.name || !form.category || !form.originalPrice) {
+      alert("Please fill required fields");
       return;
     }
 
     setLoading(true);
 
     try {
-      let finalImageUrl = formData.currentImageUrl;
+      let imageUrl = form.currentImageUrl;
 
-      // If user uploaded a new image → upload to Cloudinary
-      if (formData.image) {
-        finalImageUrl = await uploadToCloudinary(formData.image);
+      if (form.image) {
+        imageUrl = await uploadToCloudinary(form.image);
       }
 
-      // If user clicked "remove image" → clear imageUrl
-      if (formData.removeImage) {
-        finalImageUrl = "";
+      if (form.removeImage) {
+        imageUrl = "";
       }
 
-      const productData = {
-        name: formData.name.trim(),
-        brand: formData.brand.trim() || null,
-        category: formData.category.toLowerCase(),
-        description: formData.description.trim() || null,
-        originalPrice: Number(formData.originalPrice),
-        discountPrice: formData.discountPrice ? Number(formData.discountPrice) : null,
-        stock: Number(formData.stock) || 0,
-        rating: formData.rating,
-        isOnSale: formData.isOnSale,
-        isNew: formData.isNew,
-        imageUrl: finalImageUrl,
-        updatedAt: new Date().toISOString(),
+      const payload = {
+        name: form.name.trim(),
+        brand: form.brand.trim() || null,
+        category: form.category,
+        description: form.description.trim() || null,
+        originalPrice: Number(form.originalPrice),
+        discountPrice: form.discountPrice
+          ? Number(form.discountPrice)
+          : null,
+        stock: Number(form.stock) || 0,
+        rating: form.rating,
+        isOnSale: form.isOnSale,
+        isNew: form.isNew,
+        imageUrl,
+        updatedAt: serverTimestamp(),
       };
 
       if (isEditMode && product?.id) {
-        const productRef = dbRef(db, `products/${product.id}`);
-        await update(productRef, productData);
+        await setDoc(doc(db, "products", product.id), payload, {
+          merge: true,
+        });
       } else {
-        const productsRef = dbRef(db, "products");
-        const newProductRef = push(productsRef);
-        await set(newProductRef, { ...productData, createdAt: new Date().toISOString() });
+        await addDoc(collection(db, "products"), {
+          ...payload,
+          createdAt: serverTimestamp(),
+        });
       }
 
       onSuccess?.();
       onOpenChange(false);
-    } catch (error: any) {
-      console.error("Error saving product:", error);
-      alert("Failed to save product: " + error.message);
+    } catch (err: any) {
+      console.error(err);
+      alert("Failed to save product: " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // ---------- UI ----------
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-display">
-            {isEditMode ? "Edit Product" : "Add New Product"}
+          <DialogTitle>
+            {isEditMode ? "Edit Product" : "Add Product"}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6 py-4">
-          {/* Image Upload */}
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Image */}
+          <div>
             <Label>Product Image *</Label>
-            <div className="flex items-start gap-4 flex-wrap">
+            <div className="flex gap-4 mt-2">
               {imagePreview ? (
-                <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+                <div className="relative w-32 h-32">
                   <img
                     src={imagePreview}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                   <button
                     type="button"
                     onClick={removeImage}
-                    className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
+                    className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1"
                   >
                     <X size={14} />
                   </button>
                 </div>
               ) : (
-                <label className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-sm">
-                  <Upload size={24} className="text-muted-foreground mb-2" />
-                  <span className="text-xs text-muted-foreground">Upload Image</span>
+                <label className="w-32 h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer">
+                  <Upload />
+                  <span className="text-xs">Upload</span>
                   <input
                     type="file"
                     accept="image/*"
+                    hidden
                     onChange={handleImageChange}
-                    className="hidden"
                   />
                 </label>
               )}
             </div>
           </div>
 
-          {/* Rest of the form remains unchanged */}
-          {/* Name & Brand */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Product Name *</Label>
+          {/* Name / Brand */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Product Name *</Label>
               <Input
-                id="name"
-                placeholder="Classic Oxford Leather Shoes"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="bg-background"
+                value={form.name}
+                onChange={(e) =>
+                  setForm({ ...form, name: e.target.value })
+                }
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="brand">Brand Name</Label>
+            <div>
+              <Label>Brand</Label>
               <Input
-                id="brand"
-                placeholder="Premium Line"
-                value={formData.brand}
-                onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                className="bg-background"
+                value={form.brand}
+                onChange={(e) =>
+                  setForm({ ...form, brand: e.target.value })
+                }
               />
             </div>
           </div>
 
-          {/* Category & Stock */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Product Category *</Label>
+          {/* Category / Stock */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Category *</Label>
               <Select
-                value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
+                value={form.category}
+                onValueChange={(v) =>
+                  setForm({ ...form, category: v })
+                }
               >
-                <SelectTrigger className="bg-background">
+                <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat.toLowerCase()}>
-                      {cat}
+                  {categories.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="stock">Stock Quantity</Label>
+            <div>
+              <Label>Stock</Label>
               <Input
-                id="stock"
                 type="number"
-                placeholder="100"
-                min="0"
-                value={formData.stock}
-                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                className="bg-background"
+                value={form.stock}
+                onChange={(e) =>
+                  setForm({ ...form, stock: e.target.value })
+                }
               />
             </div>
           </div>
 
           {/* Pricing */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="originalPrice">Original Price *</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
-                <Input
-                  id="originalPrice"
-                  type="number"
-                  placeholder="159.99"
-                  min="0"
-                  step="0.01"
-                  value={formData.originalPrice}
-                  onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
-                  required
-                  className="pl-7 bg-background"
-                />
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Original Price *</Label>
+              <Input
+                type="number"
+                value={form.originalPrice}
+                onChange={(e) =>
+                  setForm({ ...form, originalPrice: e.target.value })
+                }
+              />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="discountPrice">Discount Price</Label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
-                <Input
-                  id="discountPrice"
-                  type="number"
-                  placeholder="129.99"
-                  min="0"
-                  step="0.01"
-                  value={formData.discountPrice}
-                  onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })}
-                  className="pl-7 bg-background"
-                />
-              </div>
+            <div>
+              <Label>Discount Price</Label>
+              <Input
+                type="number"
+                value={form.discountPrice}
+                onChange={(e) =>
+                  setForm({ ...form, discountPrice: e.target.value })
+                }
+              />
             </div>
           </div>
 
           {/* Rating */}
-          <div className="space-y-2">
-            <Label>Product Rating</Label>
-            <div className="flex items-center gap-1">
-              {renderStars()}
-              <span className="ml-2 text-sm text-muted-foreground">
-                {formData.rating > 0 ? `${formData.rating}.0` : "Not rated"}
-              </span>
-            </div>
+          <div>
+            <Label>Rating</Label>
+            <div className="flex gap-1 mt-1">{renderStars()}</div>
           </div>
 
-          {/* Badges */}
-          <div className="flex flex-wrap gap-6">
-            <div className="flex items-center space-x-2">
+          {/* Flags */}
+          <div className="flex gap-6">
+            <div className="flex items-center gap-2">
               <Checkbox
-                id="isOnSale"
-                checked={formData.isOnSale}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isOnSale: checked as boolean })
+                checked={form.isOnSale}
+                onCheckedChange={(v) =>
+                  setForm({ ...form, isOnSale: Boolean(v) })
                 }
               />
-              <Label htmlFor="isOnSale" className="cursor-pointer flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-destructive text-destructive-foreground text-xs rounded-full">
-                  Sale
-                </span>
-                Mark as On Sale
-              </Label>
+              <Label>On Sale</Label>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <Checkbox
-                id="isNew"
-                checked={formData.isNew}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isNew: checked as boolean })
+                checked={form.isNew}
+                onCheckedChange={(v) =>
+                  setForm({ ...form, isNew: Boolean(v) })
                 }
               />
-              <Label htmlFor="isNew" className="cursor-pointer flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
-                  New
-                </span>
-                Mark as New Arrival
-              </Label>
+              <Label>New Arrival</Label>
             </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Product Description</Label>
+          <div>
+            <Label>Description</Label>
             <Textarea
-              id="description"
-              placeholder="Enter product description..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="bg-background min-h-[100px]"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
             />
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          {/* Actions */}
+          <DialogFooter>
             <Button
               type="button"
               variant="outline"
@@ -464,7 +431,11 @@ const AddProductDialog = ({
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : isEditMode ? "Update Product" : "Add Product"}
+              {loading
+                ? "Saving..."
+                : isEditMode
+                ? "Update Product"
+                : "Add Product"}
             </Button>
           </DialogFooter>
         </form>
