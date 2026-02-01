@@ -35,17 +35,8 @@ interface Product {
 
 const FeaturedProducts = () => {
   const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<number[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const toggleFavorite = (productId: number) => {
-    setFavorites(prev =>
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
 
   //buy 
   const handleOrder = (product) => {
@@ -179,8 +170,6 @@ const FeaturedProducts = () => {
                 key={product.id}
                 product={product}
                 index={index}
-                favorites={favorites}
-                toggleFavorite={toggleFavorite}
                 handleOrder={handleOrder}
                 renderStars={renderStars}
               />
