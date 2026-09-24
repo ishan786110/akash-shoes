@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "./card";
@@ -14,6 +15,7 @@ export const FeaturedProductCard = ({
     renderStars,
 }) => {
     const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
+    const navigate = useNavigate();
     const price = product.discountPrice ?? product.originalPrice;
     return (
         <div
@@ -26,14 +28,15 @@ export const FeaturedProductCard = ({
         >
             <Card
                 key={product.id}
-                className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card"
+                onClick={() => navigate(`/product/${product.id}`)}
+                className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card cursor-pointer"
             >
                 <CardContent className="p-0">
                     <div className="relative overflow-hidden">
                         <img
                             src={product.imageUrl}
                             alt={product.name}
-                            className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="w-full h-64 object-contain transition-transform duration-300 group-hover:scale-105"
                         />
 
                         {/* Badges */}
@@ -66,19 +69,7 @@ export const FeaturedProductCard = ({
                             />
                         </Button>
 
-                        {/* Buy Overlay */}
-                        <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
-                            <Button
-                                variant="secondary"
-                                size="lg"
-                                onClick={() =>
-                                    handleOrder(product)
-                                }
-                            >
-                                <ShoppingCart className="w-4 h-4 mr-2" />
-                                Buy
-                            </Button>
-                        </div>
+
                     </div>
 
                     <div className="p-6">

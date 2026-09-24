@@ -68,17 +68,7 @@ const Header = () => {
             <span className="text-xl font-bold">Aakash Shoes</span>
           </Link>
 
-          {/* Search bar - desktop */}
-          <div className="hidden md:flex flex-1 max-w-lg mx-8">
-            <div className="relative w-full">
-              <Input
-                type="text"
-                placeholder="Search for shoes, brands, styles..."
-                className="pl-10 pr-4"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            </div>
-          </div>
+
 
           {/* Right side actions */}
           {/* <div className="flex items-center space-x-4"> */}
@@ -157,17 +147,7 @@ const Header = () => {
             isMenuOpen ? "max-h-screen py-4 opacity-100" : "max-h-0 py-0 opacity-0"
           )}
         >
-            {/* Mobile search */}
-            <div className="mb-4">
-              <div className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search for shoes..."
-                  className="pl-10 pr-4"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              </div>
-            </div>
+
 
             {/* Mobile navigation */}
             <nav className="space-y-2">

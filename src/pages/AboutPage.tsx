@@ -40,8 +40,8 @@ const AboutPage = () => {
             )}
             style={{ transitionDelay: "400ms" }}
             >
-              From humble beginnings in a small town to serving customers worldwide, 
-              StepForward has been crafting quality footwear experiences for over 25 years.
+              From our humble beginnings right here in Halvad to serving our wonderful customers, 
+              Aakash Shoes has been a part of your daily walk for over 23 years.
             </p>
           </div>
         </section>
@@ -59,22 +59,19 @@ const AboutPage = () => {
                 <h2 className="text-3xl font-bold mb-6">Where It All Began</h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    In 1999, our founder opened a small shoe store in the heart of our hometown 
-                    with a simple mission: to provide quality footwear and exceptional service 
-                    to our local community. What started as a family business has grown into 
-                    something we never imagined.
+                    In 2003, we opened our doors right here in the heart of Halvad with a simple dream: 
+                    to provide our local community with footwear they can trust. For our Halvadi parivar, 
+                    this isn't just a shop; it's a family legacy built on your love and support.
                   </p>
                   <p>
-                    For years, we served our neighbors with carefully curated selections of 
-                    comfortable, durable, and stylish shoes. We got to know our customers by name, 
-                    their preferences, and their stories. This personal touch became the foundation 
-                    of everything we do.
+                    Over the past 23 years, we've watched generations of Halvad families walk through our doors. 
+                    From your child's first school shoes to festive shopping for Diwali, we've shared in your joys. 
+                    Knowing you by name and understanding your needs is the true foundation of Aakash Shoes.
                   </p>
                   <p>
-                    Today, as we expand our reach globally through our online platform, we haven't 
-                    forgotten our roots. Every customer interaction, every product selection, and 
-                    every business decision is guided by the same values that made us successful 
-                    in our small town.
+                    Even as we grow and embrace new ways to serve you better, our roots remain firmly planted in Halvad's soil. 
+                    Our promise to you is the same today as it was on day one: authentic quality, honest prices, 
+                    and the warmth of a neighbor.
                   </p>
                 </div>
               </div>
@@ -92,7 +89,7 @@ const AboutPage = () => {
                   className="w-full rounded-lg shadow-lg transition-transform duration-md hover:scale-105"
                 />
                 <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-lg shadow-strong">
-                  <div className="text-2xl font-bold">25+</div>
+                  <div className="text-2xl font-bold">23+</div>
                   <div className="text-sm">Years of Service</div>
                 </div>
               </div>
@@ -145,7 +142,7 @@ const AboutPage = () => {
                   { value: "10,000+", label: "Happy Customers", delay: "200ms" },
                   { value: "500+", label: "Shoe Styles", delay: "300ms" },
                   { value: "50+", label: "Trusted Brands", delay: "400ms" },
-                  { value: "25+", label: "Countries Served", delay: "500ms" }
+                  { value: "23", label: "Years of Trust", delay: "500ms" }
                 ].map((stat, index) => (
                   <div 
                     key={index}
@@ -179,8 +176,8 @@ const AboutPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
               {[
-                { icon: MapPin, title: "Local Expertise, Global Reach", description: "We bring the personal touch of a local store to customers worldwide.", delay: "0ms" },
-                { icon: Clock, title: "25 Years of Experience", description: "Our expertise comes from decades of helping customers find their perfect fit.", delay: "100ms" },
+                { icon: MapPin, title: "Heart of Halvad", description: "Deeply rooted in Halvad, bringing our traditional warmth to every customer.", delay: "0ms" },
+                { icon: Clock, title: "23 Years of Trust", description: "Our expertise comes from over two decades of serving our beloved Halvad community.", delay: "100ms" },
                 { icon: Truck, title: "Fast & Reliable Shipping", description: "Quick delivery with careful packaging to ensure your shoes arrive in perfect condition.", delay: "200ms" }
               ].map((feature, index) => (
                 <div 
@@ -206,27 +203,7 @@ const AboutPage = () => {
               ))}
             </div>
 
-            {/* CTA section */}
-            <div ref={ctaAnimation.ref} className={cn(
-              "text-center bg-muted/30 rounded-2xl p-12 transition-all duration-lg ease-primary",
-              ctaAnimation.isVisible 
-                ? "opacity-100 translate-y-0" 
-                : "opacity-0 translate-y-12"
-            )}>
-              <h2 className="text-3xl font-bold mb-4">Ready to Step Forward?</h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Join thousands of satisfied customers who have found their perfect shoes with us. 
-                Experience the StepForward difference today.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="transition-all duration-sm hover:scale-105 hover:shadow-strong">
-                  Shop Our Collection
-                </Button>
-                <Button size="lg" variant="outline" className="transition-all duration-sm hover:scale-105">
-                  Contact Us
-                </Button>
-              </div>
-            </div>
+
           </div>
         </section>
       </main>

@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute"; // ← Import this
+import ProductPage from "./pages/ProductPage";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/:category" element={<ShopPage />} />
 
           {/* Protected Admin Route */}

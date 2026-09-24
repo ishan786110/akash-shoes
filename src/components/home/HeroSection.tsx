@@ -4,8 +4,10 @@ import heroImage from "@/assets/hero-footwear.jpg";
 import { SplitText } from "@/components/animations/SplitText";
 import { useParallax, useMouseParallax } from "@/hooks/use-parallax";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const scrollParallax = useParallax({ speed: 0.3 });
   const mouseParallax = useMouseParallax({ speed: 0.015 });
   const [isLoaded, setIsLoaded] = useState(false);
@@ -62,6 +64,7 @@ const HeroSection = () => {
             style={{ transitionDelay: "700ms" }}
           >
             <Button 
+              onClick={() => navigate('/shop')}
               size="lg" 
               variant="hero" 
               className="text-lg px-8 py-3 group transition-all duration-sm ease-elastic hover:scale-105 hover:shadow-strong"
@@ -70,6 +73,7 @@ const HeroSection = () => {
               <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-sm ease-elastic group-hover:translate-x-1" />
             </Button>
             <Button 
+              onClick={() => navigate('/about')}
               size="lg" 
               variant="outline" 
               className="text-lg px-8 py-3 border-primary-foreground text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-sm ease-primary hover:scale-105"

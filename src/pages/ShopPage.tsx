@@ -17,8 +17,9 @@ import {
   Filter,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Product } from "@/lib/utils";
+import { AnimatedShoeLoader } from "@/components/ui/AnimatedShoeLoader";
 
 // 🔥 Firestore
 import {
@@ -30,6 +31,7 @@ import { db } from "@/firebase";
 
 const ShopPage = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
 
   const [favorites, setFavorites] = useState<string[]>([]);
   const [viewMode] = useState<"grid" | "list">("grid");
@@ -104,44 +106,13 @@ const ShopPage = () => {
       <Header />
 
       <main>
-        {/* Filters */}
-        <section className="py-6 border-b">
-          <div className="container mx-auto px-4 flex flex-wrap gap-4 justify-between">
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>
 
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="featured">Featured</SelectItem>
-                <SelectItem value="price-low">
-                  Price: Low to High
-                </SelectItem>
-                <SelectItem value="price-high">
-                  Price: High to Low
-                </SelectItem>
-                <SelectItem value="rating">
-                  Customer Rating
-                </SelectItem>
-                <SelectItem value="newest">
-                  Newest First
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </section>
 
         {/* Products */}
         <section className="py-8">
           <div className="container mx-auto px-4">
             {loading ? (
-              <p className="text-center text-muted-foreground">
-                Loading products...
-              </p>
+              <AnimatedShoeLoader text="Loading amazing shoes..." />
             ) : (
               <div
                 className={`grid gap-6 ${
@@ -157,14 +128,15 @@ const ShopPage = () => {
                   return (
                     <Card
                       key={product.id}
-                      className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card"
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card cursor-pointer"
                     >
                       <CardContent className="p-0">
                         <div className="relative overflow-hidden">
                           <img
                             src={product.imageUrl}
                             alt={product.name}
-                            className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="w-full h-64 object-contain transition-transform duration-300 group-hover:scale-105"
                           />
 
                           {/* Badges */}
@@ -198,19 +170,7 @@ const ShopPage = () => {
                             />
                           </Button>
 
-                          {/* Buy Overlay */}
-                          <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
-                            <Button
-                              variant="secondary"
-                              size="lg"
-                              onClick={() =>
-                                handleOrder(product)
-                              }
-                            >
-                              <ShoppingCart className="w-4 h-4 mr-2" />
-                              Buy
-                            </Button>
-                          </div>
+
                         </div>
 
                         <div className="p-6">

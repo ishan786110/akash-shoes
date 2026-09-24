@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import categoryMen from "@/assets/category-men.jpg";
 import categoryWomen from "@/assets/category-women.jpg";
@@ -20,6 +21,7 @@ interface Category {
 }
 
 const CategorySection = () => {
+  const navigate = useNavigate();
   const categories: Category[] = [
     {
       id: "men",
@@ -99,7 +101,10 @@ const CategorySection = () => {
                 )}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card className="group cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-strong transition-all duration-md ease-primary hover:-translate-y-2">
+                <Card 
+                  onClick={() => navigate(`/${category.id}`)}
+                  className="group cursor-pointer overflow-hidden border-0 shadow-md hover:shadow-strong transition-all duration-md ease-primary hover:-translate-y-2"
+                >
                   <CardContent className="p-0">
                     <div className="relative h-80">
                       <img
@@ -151,7 +156,10 @@ const CategorySection = () => {
                 )}
                 style={{ transitionDelay: `${index * 60}ms` }}
               >
-                <Card className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-medium transition-all duration-md ease-primary hover:-translate-y-1">
+                <Card 
+                  onClick={() => navigate(`/${category.id}`)}
+                  className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-medium transition-all duration-md ease-primary hover:-translate-y-1"
+                >
                   <CardContent className="p-0">
                     <div className="relative h-36 md:h-48">
                       <img
@@ -176,13 +184,7 @@ const CategorySection = () => {
       })}
         </div>
 
-        {/* CTA section */}
-        <div className="text-center mt-12">
-          <Button size="lg" className="px-8 group transition-all duration-sm ease-elastic hover:scale-105">
-            Explore All Categories
-            <ArrowRight className="ml-2 w-5 h-5 transition-transform duration-sm ease-elastic group-hover:translate-x-1" />
-          </Button>
-        </div>
+
       </div>
     </section>
   );
