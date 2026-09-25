@@ -29,7 +29,7 @@ export const FeaturedProductCard = ({
             <Card
                 key={product.id}
                 onClick={() => navigate(`/product/${product.id}`)}
-                className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card cursor-pointer"
+                className="group transition-all duration-300 hover:shadow-lg hover:bg-card-hover border-0 bg-card shadow-md cursor-pointer"
             >
                 <CardContent className="p-0">
                     <div className="relative overflow-hidden">
