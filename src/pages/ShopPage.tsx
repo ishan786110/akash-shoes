@@ -62,6 +62,10 @@ const ShopPage = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [category]);
+
   const toggleFavorite = (productId: string) => {
     setFavorites((prev) =>
       prev.includes(productId)
@@ -79,25 +83,24 @@ const ShopPage = () => {
     )}`;
     window.open(whatsappUrl, "_blank");
   };
-  
+
   // ✅ FIXED: Category filter (case-safe)
   const filteredProducts =
     category && category !== "all"
       ? allProducts.filter(
-          (p) =>
-            p.category?.toLowerCase() === category?.toLowerCase()
-        )
+        (p) =>
+          p.category?.toLowerCase() === category?.toLowerCase()
+      )
       : allProducts;
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }).map((_, index) => (
       <Star
         key={index}
-        className={`w-4 h-4 ${
-          index < Math.floor(rating)
+        className={`w-4 h-4 ${index < Math.floor(rating)
             ? "fill-rating text-rating"
             : "text-muted-foreground"
-        }`}
+          }`}
       />
     ));
 
@@ -115,11 +118,10 @@ const ShopPage = () => {
               <AnimatedShoeLoader text="Loading amazing shoes..." />
             ) : (
               <div
-                className={`grid gap-6 ${
-                  viewMode === "grid"
+                className={`grid gap-6 ${viewMode === "grid"
                     ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     : "grid-cols-1"
-                }`}
+                  }`}
               >
                 {filteredProducts.map((product) => {
                   const price =
@@ -162,11 +164,10 @@ const ShopPage = () => {
                             }}
                           >
                             <Heart
-                              className={`w-4 h-4 ${
-                                favorites.includes(product.id)
+                              className={`w-4 h-4 ${favorites.includes(product.id)
                                   ? "fill-red-500 text-red-500"
                                   : "text-gray-600"
-                              }`}
+                                }`}
                             />
                           </Button>
 

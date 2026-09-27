@@ -7,6 +7,7 @@ import ShopImg from "@/assets/shop-img.png";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { SplitText } from "@/components/animations/SplitText";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 const AboutPage = () => {
   const heroAnimation = useScrollAnimation({ threshold: 0.2 });
@@ -16,17 +17,21 @@ const AboutPage = () => {
   const featuresAnimation = useScrollAnimation({ threshold: 0.2 });
   const ctaAnimation = useScrollAnimation({ threshold: 0.2 });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Header />
-      
+
       <main>
         {/* Hero section */}
         <section className="py-20 bg-gradient-to-b from-muted/50 to-background">
           <div ref={heroAnimation.ref} className="container mx-auto px-4 text-center">
-            <SplitText 
-              text="Our Story" 
-              as="h1" 
+            <SplitText
+              text="Our Story"
+              as="h1"
               className={cn(
                 "text-4xl md:text-5xl font-bold mb-6",
                 heroAnimation.isVisible ? "opacity-100" : "opacity-0"
@@ -34,13 +39,13 @@ const AboutPage = () => {
             />
             <p className={cn(
               "text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed transition-all duration-lg ease-primary",
-              heroAnimation.isVisible 
-                ? "opacity-100 translate-y-0" 
+              heroAnimation.isVisible
+                ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
             )}
-            style={{ transitionDelay: "400ms" }}
+              style={{ transitionDelay: "400ms" }}
             >
-              From our humble beginnings right here in Halvad to serving our wonderful customers, 
+              From our humble beginnings right here in Halvad to serving our wonderful customers,
               Aakash Shoes has been a part of your daily walk for over 23 years.
             </p>
           </div>
@@ -52,36 +57,36 @@ const AboutPage = () => {
             <div ref={storyAnimation.ref} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
               <div className={cn(
                 "transition-all duration-lg ease-primary",
-                storyAnimation.isVisible 
-                  ? "opacity-100 translate-y-0" 
+                storyAnimation.isVisible
+                  ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-12"
               )}>
                 <h2 className="text-3xl font-bold mb-6">Where It All Began</h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    In 2003, we opened our doors right here in the heart of Halvad with a simple dream: 
-                    to provide our local community with footwear they can trust. For our Halvadi parivar, 
+                    In 2003, we opened our doors right here in the heart of Halvad with a simple dream:
+                    to provide our local community with footwear they can trust. For our Halvadi parivar,
                     this isn't just a shop; it's a family legacy built on your love and support.
                   </p>
                   <p>
-                    Over the past 23 years, we've watched generations of Halvad families walk through our doors. 
-                    From your child's first school shoes to festive shopping for Diwali, we've shared in your joys. 
+                    Over the past 23 years, we've watched generations of Halvad families walk through our doors.
+                    From your child's first school shoes to festive shopping for Diwali, we've shared in your joys.
                     Knowing you by name and understanding your needs is the true foundation of Aakash Shoes.
                   </p>
                   <p>
-                    Even as we grow and embrace new ways to serve you better, our roots remain firmly planted in Halvad's soil. 
-                    Our promise to you is the same today as it was on day one: authentic quality, honest prices, 
+                    Even as we grow and embrace new ways to serve you better, our roots remain firmly planted in Halvad's soil.
+                    Our promise to you is the same today as it was on day one: authentic quality, honest prices,
                     and the warmth of a neighbor.
                   </p>
                 </div>
               </div>
               <div className={cn(
                 "relative transition-all duration-lg ease-primary",
-                storyAnimation.isVisible 
-                  ? "opacity-100 translate-y-0" 
+                storyAnimation.isVisible
+                  ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-12"
               )}
-              style={{ transitionDelay: "200ms" }}
+                style={{ transitionDelay: "200ms" }}
               >
                 <img
                   src={ShopImg}
@@ -102,12 +107,12 @@ const AboutPage = () => {
                 { icon: Award, title: "Quality Promise", description: "We carefully select every product in our store, ensuring it meets our high standards.", delay: "100ms" },
                 { icon: Users, title: "Community Impact", description: "We believe in giving back to the communities that have supported us throughout our journey.", delay: "200ms" }
               ].map((value, index) => (
-                <Card 
+                <Card
                   key={index}
                   className={cn(
                     "text-center transition-all duration-lg ease-primary hover:shadow-strong hover:-translate-y-2 cursor-default",
-                    valuesAnimation.isVisible 
-                      ? "opacity-100 translate-y-0" 
+                    valuesAnimation.isVisible
+                      ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-12"
                   )}
                   style={{ transitionDelay: value.delay }}
@@ -126,8 +131,8 @@ const AboutPage = () => {
             {/* Stats section */}
             <div ref={statsAnimation.ref} className={cn(
               "bg-primary text-primary-foreground rounded-2xl p-6 md:p-12 mb-16 transition-all duration-lg ease-primary",
-              statsAnimation.isVisible 
-                ? "opacity-100 translate-y-0" 
+              statsAnimation.isVisible
+                ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-12"
             )}>
               <div className="text-center mb-8">
@@ -136,7 +141,7 @@ const AboutPage = () => {
                   These numbers represent real people, real relationships, and real satisfaction.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
                 {[
                   { value: "10,000+", label: "Happy Customers", delay: "200ms" },
@@ -144,12 +149,12 @@ const AboutPage = () => {
                   { value: "50+", label: "Trusted Brands", delay: "400ms" },
                   { value: "23", label: "Years of Trust", delay: "500ms" }
                 ].map((stat, index) => (
-                  <div 
+                  <div
                     key={index}
                     className={cn(
                       "transition-all duration-lg ease-elastic",
-                      statsAnimation.isVisible 
-                        ? "opacity-100 translate-y-0 scale-100" 
+                      statsAnimation.isVisible
+                        ? "opacity-100 translate-y-0 scale-100"
                         : "opacity-0 translate-y-8 scale-95"
                     )}
                     style={{ transitionDelay: stat.delay }}
@@ -164,8 +169,8 @@ const AboutPage = () => {
             {/* What sets us apart */}
             <div ref={featuresAnimation.ref} className={cn(
               "text-center mb-12 transition-all duration-lg ease-primary",
-              featuresAnimation.isVisible 
-                ? "opacity-100 translate-y-0" 
+              featuresAnimation.isVisible
+                ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-12"
             )}>
               <h2 className="text-3xl font-bold mb-6">What Sets Us Apart</h2>
@@ -180,12 +185,12 @@ const AboutPage = () => {
                 { icon: Clock, title: "23 Years of Trust", description: "Our expertise comes from over two decades of serving our beloved Halvad community.", delay: "100ms" },
                 { icon: Truck, title: "Fast & Reliable Shipping", description: "Quick delivery with careful packaging to ensure your shoes arrive in perfect condition.", delay: "200ms" }
               ].map((feature, index) => (
-                <div 
+                <div
                   key={index}
                   className={cn(
                     "flex items-start space-x-4 transition-all duration-lg ease-primary group hover:translate-x-2",
-                    featuresAnimation.isVisible 
-                      ? "opacity-100 translate-y-0" 
+                    featuresAnimation.isVisible
+                      ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-12"
                   )}
                   style={{ transitionDelay: feature.delay }}
