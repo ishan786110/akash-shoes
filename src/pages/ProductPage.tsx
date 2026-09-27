@@ -51,7 +51,6 @@ const ProductPage = () => {
 
     const price = product.discountPrice ?? product.originalPrice;
 
-    // Current product page URL
     const productLink = window.location.href;
 
     const message = `Hello Aakash Shoes, I want to buy:
@@ -89,11 +88,10 @@ Product Link: ${productLink}`;
     Array.from({ length: 5 }).map((_, index) => (
       <Star
         key={index}
-        className={`w-5 h-5 ${
-          index < Math.floor(rating)
+        className={`w-5 h-5 ${index < Math.floor(rating)
             ? "fill-rating text-rating"
             : "text-muted-foreground"
-        }`}
+          }`}
       />
     ));
 
