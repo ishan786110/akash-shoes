@@ -1,18 +1,39 @@
 // api/og.js — Vercel Edge Function
-// Intercepts /product/:id requests from social bots and injects
-// dynamic Open Graph meta tags (product image, name, price).
+// For social bots: returns dynamic OG meta tags (product image, name, price).
+// For real users: serves index.html so the React SPA handles routing normally.
 
 export const config = {
   runtime: "edge",
 };
 
 const FIREBASE_PROJECT_ID = "aakash-shoes";
-const SITE_URL = "https://aakashshoes.vercel.app"; // update to your actual live domain
+const SITE_URL = "https://aakashshoes.com"; // your live custom domain
+
+// Known social media / link preview bots
+const BOT_UA_PATTERN =
+  /WhatsApp|facebookexternalhit|Facebot|Twitterbot|TelegramBot|LinkedInBot|Slackbot|Discordbot|Googlebot|bingbot|DuckDuckBot|Applebot|Pinterest|Snapchat/i;
 
 export default async function handler(req) {
+  const userAgent = req.headers.get("user-agent") ?? "";
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
 
+  // ─── Real user (has a real browser UA) ────────────────────────────────────
+  // Serve index.html so React Router handles /product/:id as normal.
+  // This fixes the "blank page on refresh" issue.
+  if (!BOT_UA_PATTERN.test(userAgent)) {
+    const indexHtml = await fetch(`${SITE_URL}/index.html`);
+    const html = await indexHtml.text();
+    return new Response(html, {
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        // No cache for real users — React app must load fresh
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+
+  // ─── Social bot ───────────────────────────────────────────────────────────
   // Fetch product from Firestore REST API (no SDK needed in Edge runtime)
   let product = null;
   try {
@@ -33,7 +54,8 @@ export default async function handler(req) {
   const productImage = product?.imageUrl ?? `${SITE_URL}/website-ss.png`;
   const productPrice = product?.discountPrice ?? product?.originalPrice ?? null;
   const priceText = productPrice ? ` - Rs.${productPrice}` : "";
-  const description = "Discover premium footwear at aakash shoes. From casual sneakers to formal shoes, boots, and athletic wear. 23+ years of expertise, global shipping.";
+  const description =
+    "Discover premium footwear at Aakash Shoes. From casual sneakers to formal shoes, boots, and athletic wear. 23+ years of expertise.";
 
   const pageUrl = `${SITE_URL}/product/${id}`;
 
@@ -57,11 +79,12 @@ export default async function handler(req) {
     `    <meta name="twitter:title" content="${productName}${priceText}" />`,
     `    <meta name="twitter:description" content="${description}" />`,
     `    <meta name="twitter:image" content="${productImage}" />`,
-    `    <script>window.location.href = "${pageUrl}";</script>`,
-    `    <noscript><meta http-equiv="refresh" content="0;url=${pageUrl}" /></noscript>`,
     "  </head>",
     "  <body>",
-    `    <p>Redirecting to <a href="${pageUrl}">${productName}</a>...</p>`,
+    `    <h1>${productName}</h1>`,
+    `    <img src="${productImage}" alt="${productName}" />`,
+    `    <p>${description}</p>`,
+    `    <a href="${pageUrl}">View Product</a>`,
     "  </body>",
     "</html>",
   ].join("\n");
