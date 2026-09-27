@@ -3,7 +3,7 @@ import Footer from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Users, Award, Heart, Truck } from "lucide-react";
-import ShopImg from "@/assets/shop-img.jpg";
+import ShopImg from "@/assets/shop-img.png";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { SplitText } from "@/components/animations/SplitText";
 import { cn } from "@/lib/utils";
