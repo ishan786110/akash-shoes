@@ -77,7 +77,7 @@ const Footer = () => {
             <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-primary-foreground/80 flex-shrink-0 mt-0.5" />
                 <a 
-                  href="https://share.google/VRqWqqLazm9EGdyVt" 
+                  href="https://www.google.com/maps/dir//Aakash+shoes+-+The+family+footwear+shop,+Shop+no.5,+Satnam+Complex,+sara+road,+Halvad,+Gujarat+363330/@23.0391808,72.531968,14z/data=!4m8!4m7!1m0!1m5!1m1!1s0x395a2ba0fa38b851:0xd684641f9a0c6254!2m2!1d71.1828339!2d23.0131249?entry=ttu&g_ep=EgoyMDI2MTAyOC4wIKXMDSoASAFQAw%3D%3D" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary-foreground/80 text-sm hover:text-primary-foreground hover:underline transition-colors"

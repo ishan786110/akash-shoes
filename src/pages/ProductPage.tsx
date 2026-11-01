@@ -66,21 +66,26 @@ Product Link: ${productLink}`;
   };
 
   const handleShare = async () => {
+    if (!product) return;
+
+    const shareUrl = `${window.location.origin}/product/${product.id}`;
     const shareData = {
-      title: product?.name,
-      text: `Check out ${product?.name} at Aakash Shoes!`,
-      url: window.location.href,
+      title: product.name,
+      text: `Check out ${product.name} at Aakash Shoes!`,
+      url: shareUrl,
     };
 
     if (navigator.share) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        console.error("Error sharing:", err);
+        if ((err as Error).name !== "AbortError") {
+          console.error("Error sharing:", err);
+        }
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast("Link copied to clipboard!");
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied to clipboard!");
     }
   };
 
